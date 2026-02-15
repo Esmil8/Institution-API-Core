@@ -20,10 +20,19 @@ namespace Institution.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
-            return Ok(await _context.Sectors.Include(s => s.Municipality).ToListAsync());
-        }
+            var sectors = await _context.Sectors.Include(s => s.Municipality).Select(s => new SectorResponseDto
+            
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    MunicipalityName = s.Municipality.Name 
+                    
+                }).ToListAsync();
 
-        [HttpPost]
+            return Ok(sectors);
+        }
+        
+    [HttpPost]
         public async Task<IActionResult> PostAsync(SectorDto sectorDto)
         {
             var municipality = await _context.Municipalities.FindAsync(sectorDto.MunicipalityId);
@@ -40,26 +49,27 @@ namespace Institution.API.Controllers
 
             _context.Sectors.Add(sector);
             await _context.SaveChangesAsync();
-            return Ok(sector);
+
+            
+            var response = new SectorResponseDto
+            {
+                Id = sector.Id,
+                Name = sector.Name,
+                MunicipalityName = municipality.Name
+            };
+
+            return Ok(response);
         }
         
 
-        [HttpPut("{id:int}")]
+    [HttpPut("{id:int}")]
         public async Task<IActionResult> PutAsync(int id, SectorDto sectorDto)
         {
             var sector = await _context.Sectors.FindAsync(id);
-
-            if (sector == null)
-            {
-                return NotFound();
-            }
-
+            if (sector == null) return NotFound();
 
             var municipality = await _context.Municipalities.FindAsync(sectorDto.MunicipalityId);
-            if (municipality == null)
-            {
-                return BadRequest("The municipality does not exist.");
-            }
+            if (municipality == null) return BadRequest("The municipality does not exist.");
 
             sector.Name = sectorDto.Name;
             sector.MunicipalityId = sectorDto.MunicipalityId;
@@ -67,7 +77,15 @@ namespace Institution.API.Controllers
             _context.Sectors.Update(sector);
             await _context.SaveChangesAsync();
 
-            return Ok(sector);
+            
+            var response = new SectorResponseDto
+            {
+                Id = sector.Id,
+                Name = sector.Name,
+                MunicipalityName = municipality.Name
+            };
+
+            return Ok(response);
         }
 
 

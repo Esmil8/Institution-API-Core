@@ -21,26 +21,28 @@ namespace Institution.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
-        
+
             var municipalities = await _context.Municipalities
                 .Include(m => m.Sectors)
                 .ToListAsync();
             return Ok(municipalities);
         }
 
+
+
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetAsync(int id)
         {
             var municipality = await _context.Municipalities.FindAsync(id);
-            
+
             if (municipality == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
-            
+
             return Ok(municipality);
         }
-    
+
         [HttpPost]
         public async Task<IActionResult> PostAsync(MunicipalityDto municipalityDto)
         {
@@ -51,7 +53,7 @@ namespace Institution.API.Controllers
 
             _context.Municipalities.Add(municipality);
             await _context.SaveChangesAsync();
-            
+
             return Ok(municipality);
         }
 
@@ -87,8 +89,8 @@ namespace Institution.API.Controllers
             _context.Municipalities.Remove(municipality);
             await _context.SaveChangesAsync();
 
-            return NoContent(); 
+            return NoContent();
         }
-        
+
     }
 }

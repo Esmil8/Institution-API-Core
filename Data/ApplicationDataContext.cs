@@ -1,4 +1,4 @@
-using Institution.Data.Entities; 
+using Institution.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Institution.Data
