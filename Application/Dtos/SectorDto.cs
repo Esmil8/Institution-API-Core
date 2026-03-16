@@ -1,4 +1,4 @@
-namespace Institution.Models.Dtos
+namespace Institution.Application.Dtos
 {
     public class SectorDto
     {

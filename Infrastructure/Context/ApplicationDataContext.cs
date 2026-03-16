@@ -1,7 +1,7 @@
-using Institution.Data.Entities;
+using Institution.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Institution.Data
+namespace Institution.Infrastructure.Context
 {
     public class ApplicationDataContext : DbContext
     {
