@@ -1,6 +1,9 @@
-using Institution.Data;
+using Institution.Infrastructure.Context;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
+using Institution.Domain.Interfaces;
+using Institution.Infrastructure.Repositories;
+using Institution.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,8 +18,11 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+builder.Services.AddScoped<IMunicipalityRepository, MunicipalityRepository>();
+builder.Services.AddScoped<ISectorRepository, SectorRepository>();
 
+var app = builder.Build();
+app.UseMiddleware<ExceptionMiddleware>();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
