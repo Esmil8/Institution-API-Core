@@ -1,5 +1,6 @@
+using Institution.Domain.Core;
 
-namespace Institution.Domain.Core
+namespace Institution.Domain.Interfaces
 {
     public interface IRepository<T> where T : BaseEntity
     {
