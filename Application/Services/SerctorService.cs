@@ -3,10 +3,11 @@ using Institution.Application.Dtos;
 using Institution.Application.Core;
 using Institution.Domain.Interfaces;
 using Institution.Domain.Entities;
+using Institution.Application.Validations;
 
 namespace Institution.Application.Services
 {
-    public class SectorService(ISectorRepository repository) : ISectorService
+    public class SectorService(ISectorRepository repository, SerctorValidator validator) : ISectorService
     {
         public async Task<ServiceResult> GetAsync()
         {
@@ -53,6 +54,14 @@ namespace Institution.Application.Services
         
         try
         {
+            var validate = await validator.ValidateAsync(sectorDto);
+            if (!validate.IsValid)
+            {
+                result.Success = false;
+                result.Message = string.Join(", ", validate.Errors.Select(x => x.ErrorMessage));
+                return result;
+            }
+
             var entity = new Sector
             {
                 Name = sectorDto.Name,
@@ -78,6 +87,14 @@ namespace Institution.Application.Services
             
             try
             {
+                var validate = await validator.ValidateAsync(sectorDto);
+                if (!validate.IsValid)
+                {
+                    result.Success = false;
+                    result.Message = string.Join(", ", validate.Errors.Select(x => x.ErrorMessage));
+                    return result;
+                }
+                
                 var entity = await repository.GetById(Id);
                 if (entity == null)
                 {
