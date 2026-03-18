@@ -4,10 +4,11 @@ using Institution.Application.Dtos;
 using Institution.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Institution.Domain.Entities;
+using Institution.Application.Validations;
 
 namespace Institution.Application.Services
 {
-    public class MunicipalityService(IMunicipalityRepository repository) : IMunicipalityService
+    public class MunicipalityService(IMunicipalityRepository repository, MunicipalityValidator validator) : IMunicipalityService
     {
         public async Task<ServiceResult> GetAsync()
         {
@@ -45,6 +46,14 @@ namespace Institution.Application.Services
 
             try
             {
+                var validate = await validator.ValidateAsync(municipalityDto);
+                if (!validate.IsValid)
+                {
+                    result.Success = false;
+                    result.Message = string.Join(", ", validate.Errors.Select(x => x.ErrorMessage));
+                    return result;
+                }
+                
                 var entity = new Municipality
                 {
                     Name = municipalityDto.Name
@@ -71,6 +80,14 @@ namespace Institution.Application.Services
 
             try
             {
+                var validate = await validator.ValidateAsync(municipalityDto);
+                if (!validate.IsValid)
+                {
+                    result.Success = false;
+                    result.Message = string.Join(", ", validate.Errors.Select(x => x.ErrorMessage));
+                    return result;
+                }
+
                 var entity = await repository.GetById(Id);
                 if (entity == null)
                 {
